@@ -1,0 +1,26 @@
+# Python cache & build
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Environment variables & secrets
+.env
+private_keys.json
+*.pem
+*.key
+
+# Testing & logs
+.pytest_cache/
+.coverage
+*.log
+
+# System & OS
+.DS_Store
+Thumbs.db
+ordershield.zip

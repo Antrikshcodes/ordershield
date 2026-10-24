@@ -1,0 +1,1600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OrderShield AI — Autonomous Risk Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brandBg: '#09090B',
+            brandPanel: '#121214',
+            brandPanelHover: '#18181B',
+            brandBlack: '#050505',
+            brandCharcoal: '#18181B',
+            brandText: '#F4F4F5',
+            brandMuted: '#71717A',
+            brandBorder: '#27272A',
+            brandSubtle: '#18181B',
+            brandBorderLight: '#3F3F46',
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #09090B; }
+    ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
+
+    .bg-grid {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    }
+    .bg-grid-subtle {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+    .nav-active {
+      background-color: rgba(255, 255, 255, 0.06) !important;
+      color: #FFFFFF !important;
+      border-left: 2px solid #FFFFFF;
+    }
+
+    /* Pure Monochrome Silver Typography */
+    .silver-gradient-text {
+      background: linear-gradient(135deg, #FFFFFF 0%, #E5E5E5 25%, #A1A1AA 52%, #D4D4D8 78%, #FFFFFF 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      animation: silverShine 8s ease infinite;
+    }
+
+    @keyframes silverShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Pure Silver & White Button */
+    .btn-silver {
+      background: linear-gradient(135deg, #FFFFFF 0%, #F5F5F5 30%, #E5E5E5 70%, #D4D4D4 100%);
+      color: #000000;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-silver:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(255, 255, 255, 0.35), inset 0 1px 0 #FFFFFF;
+    }
+
+    /* Pure Silver Glassmorphism (No Blue Undertones) */
+    .glass-silver {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+    }
+    .glass-silver:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.26);
+      box-shadow: 0 8px 36px 0 rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+    }
+
+    /* Pure Grey Glassmorphism */
+    .glass-grey {
+      background: rgba(18, 18, 20, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+    .glass-grey:hover {
+      background: rgba(24, 24, 27, 0.75);
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    /* Broken Text / Cyber Decryption Glitch Animation (Monochrome) */
+    .glitch-active {
+      text-shadow: 2.5px 0 rgba(255, 255, 255, 0.95), -2.5px 0 rgba(160, 160, 160, 0.85), 0 0 25px rgba(255, 255, 255, 0.5);
+      animation: glitch-jitter 0.07s ease infinite alternate;
+    }
+
+    @keyframes glitch-jitter {
+      0% { transform: translate(0, 0) skew(0deg); }
+      20% { transform: translate(-1.5px, 0.8px) skew(0.5deg); }
+      40% { transform: translate(1.2px, -1px) skew(-0.4deg); }
+      60% { transform: translate(-0.8px, -0.6px) skew(0.3deg); }
+      80% { transform: translate(1.8px, 0.6px) skew(-0.5deg); }
+      100% { transform: translate(0, 0) skew(0deg); }
+    }
+  </style>
+</head>
+<body class="bg-brandBg text-brandText font-sans antialiased overflow-x-hidden selection:bg-neutral-700 selection:text-white">
+
+  <!-- 1. CINEMATIC HERO SCREEN -->
+  <div id="intro-screen" class="fixed inset-0 z-50 bg-brandBlack text-white flex flex-col justify-between p-6 md:p-12 transition-opacity duration-700 select-none bg-grid overflow-hidden">
+    <!-- Ambient Monochrome Silver Light Cones -->
+    <div class="pointer-events-none absolute top-1/4 left-1/6 w-[36rem] h-[36rem] bg-gradient-to-br from-white/[0.04] via-neutral-400/[0.015] to-transparent rounded-full blur-3xl"></div>
+    <div class="pointer-events-none absolute bottom-1/4 right-1/4 w-[40rem] h-[40rem] bg-gradient-to-tl from-white/[0.03] via-neutral-500/[0.015] to-transparent rounded-full blur-[120px]"></div>
+
+    <!-- Interactive Cursor Spotlight -->
+    <div id="cursor-spotlight" class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300 opacity-70" style="background: radial-gradient(600px circle at 50% 50%, rgba(255, 255, 255, 0.035), transparent 45%);"></div>
+
+    <!-- Top Navigation Header -->
+    <div class="flex items-center justify-between z-10 w-full">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-7 h-7 border border-white/40 bg-gradient-to-br from-white/20 via-neutral-400/10 to-transparent flex items-center justify-center font-mono text-xs font-bold tracking-tighter text-white shadow-[0_0_15px_rgba(255,255,255,0.2)] rounded-sm">OS</div>
+        <div>
+          <div class="font-mono text-xs tracking-widest uppercase font-semibold text-white flex items-center space-x-2">
+            <span>OrderShield AI</span>
+            <span class="text-[9px] px-1.5 py-0.5 border border-neutral-700 bg-neutral-900/80 text-neutral-300 rounded-sm">v1.2</span>
+          </div>
+          <span class="font-mono text-[9px] tracking-widest uppercase text-neutral-400">AUTONOMOUS RISK INTELLIGENCE</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 font-mono text-[11px]">
+        <div class="hidden sm:flex items-center space-x-2 px-3 py-1 glass-grey border border-white/10 rounded-sm text-neutral-400">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-neutral-300">PROVENANCE LOGS: ACTIVE</span>
+        </div>
+        <div class="text-neutral-500 text-[10px] tracking-wider hidden md:block">RESTRICTED TERMINAL</div>
+      </div>
+    </div>
+
+    <!-- 3D Monolith Interactive Canvas -->
+    <canvas id="monolith-canvas" class="absolute inset-0 z-0 pointer-events-none opacity-95"></canvas>
+
+    <!-- Floating Live Telemetry Cards Beside Monolith (Silver/Grey Glassmorphism) -->
+    <div class="hidden xl:flex flex-col gap-3 absolute right-14 top-1/2 -translate-y-1/2 z-10">
+      <!-- 3D Core Geometry Selector -->
+      <div class="glass-grey p-2.5 rounded-sm space-y-2 w-64 pointer-events-auto border border-white/10 hover:border-white/25 transition">
+        <div class="flex items-center justify-between text-neutral-400 font-mono text-[9px] tracking-wider uppercase">
+          <span class="flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span class="text-neutral-300">CORE ARCHITECTURE</span>
+          </span>
+          <span class="text-neutral-500">CYBER 3D</span>
+        </div>
+        <div class="grid grid-cols-3 gap-1 font-mono text-[9px]">
+          <button id="shape-btn-knot" onclick="switchHeroShape('knot')" class="px-1.5 py-1.5 bg-white/15 text-white font-semibold border border-white/25 rounded-xs transition text-center cursor-pointer hover:bg-white/25">KNOT</button>
+          <button id="shape-btn-prism" onclick="switchHeroShape('prism')" class="px-1.5 py-1.5 text-neutral-400 hover:text-white border border-transparent hover:border-white/15 rounded-xs transition text-center cursor-pointer">PRISM</button>
+          <button id="shape-btn-hypercube" onclick="switchHeroShape('hypercube')" class="px-1.5 py-1.5 text-neutral-400 hover:text-white border border-transparent hover:border-white/15 rounded-xs transition text-center cursor-pointer">TESSERACT</button>
+        </div>
+      </div>
+
+      <div class="glass-grey p-3.5 rounded-sm space-y-1.5 w-64 hover:border-white/25 transition pointer-events-none">
+        <div class="flex items-center justify-between text-neutral-400 font-mono text-[10px]">
+          <span class="flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+            <span class="text-neutral-300">GSTIN VERIFICATION</span>
+          </span>
+          <span class="text-neutral-500 text-[9px]">MH-27</span>
+        </div>
+        <div class="text-white font-mono font-semibold tracking-wider text-xs">27AAPFU0939F1ZV</div>
+        <div class="text-[9px] font-mono text-neutral-400 flex items-center justify-between pt-1 border-t border-white/5">
+          <span class="text-neutral-300">STATUS: ACTIVE TAXPAYER</span>
+          <span class="text-neutral-400">LATENCY: 0.24ms</span>
+        </div>
+      </div>
+      <div class="glass-grey p-3.5 rounded-sm space-y-1.5 w-64 pointer-events-none">
+        <div class="flex items-center justify-between text-neutral-400 font-mono text-[10px]">
+          <span class="flex items-center space-x-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+            <span class="text-neutral-300">AGENT CONSENSUS</span>
+          </span>
+          <span class="text-neutral-500 text-[9px]">FETCH.AI</span>
+        </div>
+        <div class="text-neutral-300 font-mono tracking-wider text-xs">agent1q0hyh28nvsd...</div>
+        <div class="text-[9px] font-mono text-neutral-400 flex items-center justify-between pt-1 border-t border-white/5">
+          <span>ZERO DISCREPANCY</span>
+          <span class="text-white font-semibold">RISK 0.00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center Hero Content -->
+    <div class="relative z-10 max-w-2xl my-auto">
+      <!-- Metallic Silver Glass Badge -->
+      <div class="glass-silver inline-flex items-center space-x-2.5 text-[10px] font-mono tracking-widest uppercase px-3.5 py-1.5 mb-5 text-neutral-200 rounded-sm">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neutral-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+        </span>
+        <span class="tracking-wider">EVIDENCE-BASED FORENSIC AUDITING</span>
+        <span class="text-neutral-500">//</span>
+        <span class="text-white font-semibold">AGENT NODE 09</span>
+      </div>
+
+      <!-- Scramble Hover Heading with Broken Text Animation & Silver Gradient -->
+      <div class="inline-flex items-center space-x-1.5 font-mono text-[9px] tracking-widest uppercase text-neutral-400 mb-2">
+        <i data-lucide="scan-line" class="w-3 h-3 text-neutral-300 animate-pulse"></i>
+        <span>HOVER TO DECRYPT FORENSIC PROTOCOL</span>
+      </div>
+
+      <h1 id="hero-heading" class="text-5xl md:text-7xl font-light tracking-tight leading-none mb-5 cursor-pointer select-none group transition-all duration-300" title="Hover cursor to decrypt broken cipher">
+        <span class="silver-gradient-text font-light">Trust, but </span>
+        <span class="relative inline-block font-bold text-white underline decoration-neutral-500 decoration-2 underline-offset-8 transition-colors group-hover:text-neutral-100 group-hover:decoration-white">verify</span><span class="text-neutral-400">.</span>
+      </h1>
+
+      <p class="text-neutral-300 text-base md:text-lg font-light leading-relaxed mb-8 max-w-lg">
+        Investigate supplier identities. Detect shell entity discrepancies. Reconcile GSTIN tax tables with autonomous Fetch.ai risk intelligence.
+      </p>
+
+      <!-- Action Buttons with Silver/Grey Glassmorphism & Crisp Monochrome Shine -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 font-mono text-xs">
+        <button onclick="enterWorkspace()" class="btn-silver px-8 py-4 text-black font-semibold tracking-wider uppercase flex items-center justify-center space-x-2.5 cursor-pointer rounded-sm group relative overflow-hidden">
+          <span class="relative z-10 flex items-center space-x-2">
+            <span>Open Investigation Workspace</span>
+            <i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"></i>
+          </span>
+          <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></span>
+        </button>
+        <button onclick="enterWorkspace(true)" class="glass-silver px-7 py-4 text-neutral-200 hover:text-white transition uppercase tracking-wider flex items-center justify-center space-x-2 cursor-pointer rounded-sm group font-semibold">
+          <i data-lucide="play-circle" class="w-3.5 h-3.5 text-neutral-400 group-hover:text-white transition-colors"></i>
+          <span>Explore Demo Case</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Telemetry Bar -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between text-[10px] font-mono text-neutral-400 border-t border-neutral-900 pt-4 z-10 gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <span class="text-neutral-300">NODE: SHIELD-IND-09</span>
+        <span class="text-neutral-600">//</span>
+        <span>FETCH.AI AGENT MESH</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <div>ENCRYPTION: <span class="text-neutral-300">SHA-256 PROVENANCE</span></div>
+        <div class="hidden md:block">LATENCY: <span class="text-emerald-400">0.24ms</span></div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-neutral-400"></span>
+        <span>GSTN STATE REGISTRY: <span class="text-neutral-200">ACTIVE</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN WORKSPACE -->
+  <div id="workspace-container" class="min-h-screen flex flex-col md:flex-row opacity-0 transition-opacity duration-500 bg-brandBg text-brandText">
+    <aside class="w-full md:w-64 bg-brandPanel border-b md:border-b-0 md:border-r border-brandBorder flex flex-col justify-between flex-shrink-0 z-20">
+      <div>
+        <div class="p-5 border-b border-brandBorder flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-6 h-6 border border-white/80 bg-white/5 flex items-center justify-center font-mono font-bold text-xs text-white">OS</div>
+            <div>
+              <div class="text-xs font-semibold tracking-tight uppercase text-white">OrderShield AI</div>
+              <div class="text-[9px] font-mono text-brandMuted tracking-wider">RISK INTELLIGENCE</div>
+            </div>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Live"></span>
+        </div>
+        <nav class="p-3 space-y-1 font-mono text-xs">
+          <button onclick="switchView('overview')" id="nav-overview" class="nav-active w-full flex items-center space-x-2.5 px-3 py-2 text-left transition cursor-pointer rounded-sm">
+            <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+            <span>Overview</span>
+          </button>
+          <button onclick="switchView('investigations')" id="nav-investigations" class="w-full flex items-center space-x-2.5 px-3 py-2 text-brandMuted hover:text-brandText hover:bg-white/5 text-left transition cursor-pointer rounded-sm">
+            <i data-lucide="folder-search" class="w-3.5 h-3.5"></i>
+            <span>Investigations</span>
+          </button>
+          <button onclick="switchView('document-intake')" id="nav-document-intake" class="w-full flex items-center space-x-2.5 px-3 py-2 text-brandMuted hover:text-brandText hover:bg-white/5 text-left transition cursor-pointer rounded-sm">
+            <i data-lucide="file-up" class="w-3.5 h-3.5"></i>
+            <span>Document Intake</span>
+          </button>
+          <button onclick="switchView('activity-log')" id="nav-activity-log" class="w-full flex items-center space-x-2.5 px-3 py-2 text-brandMuted hover:text-brandText hover:bg-white/5 text-left transition cursor-pointer rounded-sm">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i>
+            <span>Activity Log</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="p-4 border-t border-brandBorder font-mono text-[10px] space-y-2 bg-brandPanel/60">
+        <div class="flex items-center justify-between text-brandMuted">
+          <span>MODE</span>
+          <span class="text-neutral-200 font-semibold tracking-wider">INVESTIGATION</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-brandMuted">FETCH.AI UAGENT</span>
+          <span class="flex items-center space-x-1.5 text-emerald-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="font-semibold">CONNECTED</span>
+          </span>
+        </div>
+        <div class="text-neutral-500 pt-2 border-t border-brandBorder flex justify-between">
+          <span>NODE // SHIELD-IND-09</span>
+          <button onclick="replayIntro()" class="text-neutral-400 hover:text-white underline cursor-pointer">INTRO</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 bg-brandBg bg-grid-subtle">
+      <header class="h-14 bg-brandPanel/90 backdrop-blur border-b border-brandBorder px-6 flex items-center justify-between sticky top-0 z-10">
+        <div class="flex items-center space-x-2 text-[11px] font-mono tracking-widest text-brandMuted">
+          <span class="text-neutral-300" id="page-title">WORKSPACE // OVERVIEW</span>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="hidden sm:flex items-center space-x-2 font-mono text-[10px] text-brandMuted border border-brandBorder px-2.5 py-1 bg-brandSubtle rounded-sm">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span class="text-neutral-300">GSTN REGISTRY ACTIVE</span>
+          </div>
+          <button onclick="switchView('document-intake')" class="px-3.5 py-1.5 bg-white text-black hover:bg-neutral-200 transition text-[11px] font-mono uppercase tracking-wider flex items-center space-x-1.5 cursor-pointer font-semibold rounded-sm">
+            <i data-lucide="plus" class="w-3 h-3"></i>
+            <span>New Case</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 md:p-8 flex-1 overflow-y-auto">
+        <!-- VIEW A: OVERVIEW -->
+        <section id="view-overview" class="space-y-8">
+          <div>
+            <div class="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest uppercase border border-neutral-800 bg-white/[0.03] px-2 py-0.5 mb-2 text-neutral-400 rounded-sm">
+              <span class="w-1.5 h-1.5 bg-white rounded-full"></span>
+              <span>LIVE EVIDENCE MONITOR</span>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-light tracking-tight text-white">Vendor Intelligence</h1>
+            <p class="text-brandMuted text-xs mt-1">An evidence-first approach to supplier risk, registry cross-checks, and tax fraud detection.</p>
+          </div>
+
+          <div class="grid grid-cols-2 lg:grid-cols-4 bg-brandPanel border border-brandBorder divide-y sm:divide-y-0 sm:divide-x divide-brandBorder font-mono rounded-sm">
+            <div class="p-5 hover:bg-white/[0.02] transition">
+              <div class="text-[10px] tracking-widest uppercase text-brandMuted mb-1">Total Investigations</div>
+              <div id="stat-total" class="text-3xl font-light text-white">3</div>
+            </div>
+            <div class="p-5 hover:bg-white/[0.02] transition">
+              <div class="text-[10px] tracking-widest uppercase text-amber-400/90 mb-1 flex items-center space-x-1">
+                <span>Requires Review</span>
+              </div>
+              <div class="text-3xl font-light text-amber-300">1</div>
+            </div>
+            <div class="p-5 hover:bg-white/[0.02] transition">
+              <div class="text-[10px] tracking-widest uppercase text-rose-400/90 mb-1">Inconsistencies</div>
+              <div class="text-3xl font-light text-rose-400">1</div>
+            </div>
+            <div class="p-5 hover:bg-white/[0.02] transition">
+              <div class="text-[10px] tracking-widest uppercase text-emerald-400/90 mb-1">Passed Checks</div>
+              <div class="text-3xl font-light text-emerald-400">1</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-7 bg-brandPanel border border-brandBorder rounded-sm">
+              <div class="p-4 border-b border-brandBorder flex items-center justify-between font-mono text-[11px]">
+                <span class="font-semibold text-white uppercase tracking-wider flex items-center space-x-2">
+                  <i data-lucide="shield-check" class="w-3.5 h-3.5 text-neutral-400"></i>
+                  <span>Live Case Dossiers</span>
+                </span>
+                <span class="text-brandMuted text-[10px]">CLICK TO PREVIEW // DBL-CLICK TO INSPECT</span>
+              </div>
+              <div id="investigations-list" class="divide-y divide-brandBorder font-mono text-xs"></div>
+            </div>
+
+            <div class="lg:col-span-5 bg-brandPanel border border-brandBorder p-6 space-y-5 rounded-sm">
+              <div class="flex items-center justify-between font-mono text-[10px] text-brandMuted pb-3 border-b border-brandBorder">
+                <span class="text-neutral-400">FEATURED DOSSIER</span>
+                <span id="feat-id" class="text-white font-semibold">ORD-IN-8891</span>
+              </div>
+              <div>
+                <div class="text-[10px] font-mono uppercase text-brandMuted mb-0.5">Audited Entity</div>
+                <h3 id="feat-name" class="text-xl font-light tracking-tight text-white leading-tight">Acme Electronics Technologies Pvt Ltd</h3>
+                <div id="feat-date" class="font-mono text-[10px] text-neutral-500 mt-1">2026-10-24 13:24 // UTC+5:30</div>
+              </div>
+              <div id="feat-verdict-box" class="p-4 border rounded-sm transition">
+                <div class="flex items-center justify-between mb-1.5 font-mono">
+                  <span id="feat-verdict" class="text-xs font-bold tracking-widest uppercase">PROCEED WITH ONBOARDING</span>
+                  <span id="feat-score" class="text-[11px] font-semibold">RISK: 0.00 / 1.00</span>
+                </div>
+                <p id="feat-summary" class="text-xs text-neutral-300 leading-relaxed font-sans">
+                  GSTIN verified against state code 27 (Maharashtra). No billing discrepancies detected.
+                </p>
+              </div>
+              <div class="space-y-2 pt-1 font-mono text-xs">
+                <div class="text-[10px] uppercase text-brandMuted">Key Findings</div>
+                <div id="feat-findings" class="space-y-1.5 text-neutral-300 text-[11px]"></div>
+              </div>
+              <div class="pt-3 border-t border-brandBorder">
+                <button onclick="viewInvestigationDetail(currentFeaturedId)" class="w-full py-2.5 bg-white text-black hover:bg-neutral-200 transition text-xs font-mono uppercase tracking-wider font-semibold cursor-pointer rounded-sm flex items-center justify-center space-x-2">
+                  <span>Inspect Forensic Evidence</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW B: INVESTIGATION DETAIL -->
+        <section id="view-investigation-detail" class="hidden space-y-6">
+          <div class="flex items-center justify-between border-b border-brandBorder pb-3 font-mono text-xs">
+            <button onclick="switchView('overview')" class="flex items-center space-x-1.5 text-brandMuted hover:text-white transition cursor-pointer">
+              <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+              <span>Back to Overview</span>
+            </button>
+            <div id="detail-case-id" class="text-brandMuted uppercase tracking-widest">CASE // ORD-IN-8891</div>
+          </div>
+
+          <div class="bg-brandPanel border border-brandBorder p-6 md:p-8 rounded-sm">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 pb-6 border-b border-brandBorder">
+              <div>
+                <span class="text-[10px] font-mono tracking-widest uppercase text-brandMuted">LEGAL SUPPLIER IDENTITY</span>
+                <h1 id="detail-vendor-name" class="text-2xl md:text-3xl font-light text-white mt-1">Acme Electronics Technologies Pvt Ltd</h1>
+                <div class="flex flex-wrap items-center gap-3 mt-1.5 font-mono text-[11px] text-neutral-400">
+                  <span id="detail-timestamp">AUDITED: 2026-10-24 13:24</span>
+                  <span>•</span>
+                  <span id="detail-gstin">GSTIN: 27AAPFU0939F1ZV</span>
+                  <span>•</span>
+                  <span id="detail-origin">REGION: MH // INDIA</span>
+                </div>
+              </div>
+              <div class="lg:text-right font-mono">
+                <div class="text-[10px] text-brandMuted tracking-widest uppercase mb-0.5">AGGREGATE RISK SCORE</div>
+                <div class="flex items-baseline lg:justify-end space-x-1.5">
+                  <span id="detail-score-num" class="text-3xl font-light text-white">0.00</span>
+                  <span class="text-xs text-brandMuted">/ 1.00</span>
+                </div>
+                <div class="w-44 h-1.5 bg-neutral-800 mt-2 ml-auto overflow-hidden rounded-full">
+                  <div id="detail-score-bar" class="h-full bg-emerald-400 transition-all duration-500 rounded-full" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="detail-verdict-box" class="mt-5 p-4 border bg-brandSubtle border-brandBorder rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <div class="text-[9px] font-mono uppercase text-brandMuted tracking-widest">RECOMMENDATION</div>
+                <div id="detail-verdict" class="text-base font-mono font-bold tracking-tight text-white">PROCEED WITH ONBOARDING</div>
+                <p id="detail-verdict-desc" class="text-xs text-neutral-300 mt-0.5 max-w-xl font-sans">
+                  All evidence matches state registry filings.
+                </p>
+              </div>
+              <button onclick="exportAuditDossier()" class="glass-silver px-3.5 py-2 text-xs font-mono uppercase tracking-wider transition cursor-pointer text-neutral-200 rounded-sm flex items-center space-x-1.5">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                <span>Export Dossier</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="border-b border-brandBorder flex space-x-6 font-mono text-xs">
+            <button onclick="switchDetailTab('tab-overview')" id="btn-tab-overview" class="pb-2.5 border-b-2 border-white text-white font-semibold cursor-pointer">OVERVIEW</button>
+            <button onclick="switchDetailTab('tab-evidence')" id="btn-tab-evidence" class="pb-2.5 border-b-2 border-transparent text-brandMuted hover:text-white cursor-pointer">EVIDENCE</button>
+            <button onclick="switchDetailTab('tab-documents')" id="btn-tab-documents" class="pb-2.5 border-b-2 border-transparent text-brandMuted hover:text-white cursor-pointer">DOCUMENTS</button>
+            <button onclick="switchDetailTab('tab-report')" id="btn-tab-report" class="pb-2.5 border-b-2 border-transparent text-brandMuted hover:text-white cursor-pointer">REPORT</button>
+          </div>
+
+          <div id="content-tab-overview" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-brandPanel border border-brandBorder p-5 space-y-1 font-mono rounded-sm">
+                <div class="text-[10px] text-brandMuted uppercase">Tax Compliance Standing</div>
+                <div id="tab-overview-compliance" class="text-xl font-light text-emerald-400">98.5%</div>
+                <p class="text-[11px] text-neutral-400 font-sans">Consistent filing records on official portal.</p>
+              </div>
+              <div class="bg-brandPanel border border-brandBorder p-5 space-y-1 font-mono rounded-sm">
+                <div class="text-[10px] text-brandMuted uppercase">Sanctions & OFAC Check</div>
+                <div id="tab-overview-sanctions" class="text-xl font-light text-emerald-400">PASSED</div>
+                <p class="text-[11px] text-neutral-400 font-sans">Non-embargoed corporate jurisdiction.</p>
+              </div>
+              <div class="bg-brandPanel border border-brandBorder p-5 space-y-1 font-mono rounded-sm">
+                <div class="text-[10px] text-brandMuted uppercase">Pipeline Engine Latency</div>
+                <div id="tab-overview-latency" class="text-xl font-light text-neutral-200">3.8 ms</div>
+                <p class="text-[11px] text-neutral-400 font-sans">Evaluated concurrently with zero delay.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="content-tab-evidence" class="hidden space-y-4">
+            <div class="bg-brandPanel border border-brandBorder overflow-hidden rounded-sm">
+              <div class="p-3 border-b border-brandBorder bg-white/[0.02] flex items-center justify-between text-[11px] font-mono">
+                <span class="text-neutral-300 font-semibold">RECONCILED FORENSIC EVIDENCE</span>
+                <span class="text-brandMuted text-[10px]">CLICK ROW TO VIEW PROVENANCE</span>
+              </div>
+              <table class="w-full text-left text-xs font-mono border-collapse">
+                <thead>
+                  <tr class="border-b border-brandBorder text-brandMuted bg-white/[0.01]">
+                    <th class="p-3.5 font-medium uppercase">Verification Check</th>
+                    <th class="p-3.5 font-medium uppercase">Document Value</th>
+                    <th class="p-3.5 font-medium uppercase">Registry Value</th>
+                    <th class="p-3.5 font-medium uppercase text-right">Result</th>
+                  </tr>
+                </thead>
+                <tbody id="detail-evidence-tbody" class="divide-y divide-brandBorder/70 text-neutral-300"></tbody>
+              </table>
+            </div>
+
+            <div id="evidence-drawer" class="hidden bg-brandPanel border border-brandBorder p-5 space-y-3 font-mono text-xs rounded-sm">
+              <div class="flex items-center justify-between border-b border-brandBorder pb-2">
+                <span id="drawer-title" class="font-bold text-white uppercase">PROVENANCE // GSTIN_CHECK</span>
+                <button onclick="closeEvidenceDrawer()" class="text-brandMuted hover:text-white cursor-pointer">[CLOSE]</button>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <span class="text-brandMuted text-[10px]">EXPECTED CRITERIA:</span>
+                  <p id="drawer-expected" class="text-neutral-200 font-semibold mt-0.5">15-char valid checksum</p>
+                </div>
+                <div>
+                  <span class="text-brandMuted text-[10px]">OBSERVED VALUE:</span>
+                  <p id="drawer-observed" class="text-neutral-200 font-semibold mt-0.5">27AAPFU0939F1ZV</p>
+                </div>
+                <div>
+                  <span class="text-brandMuted text-[10px]">SOURCE PROVENANCE:</span>
+                  <p id="drawer-source" class="text-neutral-300 mt-0.5">Supplier Invoice + IN-GSTN API</p>
+                </div>
+                <div>
+                  <span class="text-brandMuted text-[10px]">AUDIT STATUS:</span>
+                  <p id="drawer-verdict" class="text-emerald-400 font-semibold mt-0.5">PASSED</p>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-brandBorder">
+                <span class="text-brandMuted text-[10px]">FORENSIC RATIONALE:</span>
+                <p id="drawer-explanation" class="text-neutral-400 font-sans text-xs mt-0.5">
+                  State code 27 resolves cleanly to Maharashtra jurisdiction.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div id="content-tab-documents" class="hidden space-y-4">
+            <div class="bg-brandPanel border border-brandBorder p-5 space-y-3 font-mono text-xs rounded-sm">
+              <div class="text-[10px] uppercase text-brandMuted">ATTACHED COMMERCIAL EVIDENCE</div>
+              <div id="detail-documents-list" class="divide-y divide-brandBorder border border-brandBorder rounded-sm"></div>
+            </div>
+          </div>
+
+          <div id="content-tab-report" class="hidden space-y-4">
+            <div class="bg-brandPanel border border-brandBorder p-6 space-y-4 font-mono text-xs rounded-sm">
+              <div class="border-b border-brandBorder pb-3 flex justify-between items-center">
+                <div>
+                  <div class="text-sm font-bold text-white uppercase">EXECUTIVE AUDIT SUMMARY</div>
+                  <div class="text-brandMuted text-[10px]">REPORT IDENTIFIER: REP-2026-IN-09</div>
+                </div>
+                <div class="text-right text-brandMuted text-[10px]">RESTRICTED // HUMAN-IN-THE-LOOP</div>
+              </div>
+              <div>
+                <h4 class="font-bold text-white uppercase mb-1">1. Findings & Rationale</h4>
+                <p id="report-rationale" class="text-neutral-300 font-sans text-xs leading-relaxed">Automated checks completed across tax registry tables.</p>
+              </div>
+              <div>
+                <h4 class="font-bold text-white uppercase mb-1">2. Required Next Steps</h4>
+                <p id="report-next-steps" class="text-neutral-300 font-sans text-xs leading-relaxed">Mandatory review by compliance officer before PO issuance.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW C: DOCUMENT INTAKE -->
+        <section id="view-document-intake" class="hidden space-y-6">
+          <div>
+            <div class="inline-flex items-center space-x-2 text-[10px] font-mono tracking-widest uppercase border border-neutral-800 bg-white/[0.03] px-2 py-0.5 mb-2 text-neutral-400 rounded-sm">
+              <span class="w-1.5 h-1.5 bg-neutral-300 rounded-full"></span>
+              <span>SYNTHETIC & REAL PROOF INGESTION</span>
+            </div>
+            <h1 class="text-3xl font-light tracking-tight text-white">Document Intake & Forensics</h1>
+            <p class="text-brandMuted text-xs mt-0.5">Drop commercial invoices, proforma receipts, or supplier tax proof PDFs.</p>
+          </div>
+
+          <div class="bg-brandPanel border border-dashed border-neutral-700 hover:border-neutral-400 transition p-10 text-center relative group cursor-pointer rounded-sm" onclick="document.getElementById('file-upload').click()">
+            <input type="file" id="file-upload" accept=".pdf" class="hidden" onchange="processDocumentUpload(this.files)" />
+            <div class="max-w-xs mx-auto space-y-3 pointer-events-none">
+              <div class="w-10 h-10 border border-neutral-600 bg-white/5 mx-auto flex items-center justify-center rounded-sm">
+                <i data-lucide="upload" class="w-4 h-4 text-white"></i>
+              </div>
+              <div>
+                <div class="text-base font-light text-white">Bring the evidence.</div>
+                <div class="text-xs text-brandMuted mt-0.5">Drop vendor documents here or browse files.</div>
+              </div>
+              <div class="text-[10px] font-mono text-neutral-500">PDF SUPPORTED // PROVENANCE LOGGED</div>
+            </div>
+          </div>
+
+          <div class="bg-brandPanel border border-brandBorder p-6 space-y-5 rounded-sm">
+            <div class="flex items-center justify-between border-b border-brandBorder pb-3 text-xs font-mono">
+              <span class="font-bold text-white uppercase flex items-center space-x-2">
+                <i data-lucide="cpu" class="w-3.5 h-3.5 text-neutral-400"></i>
+                <span>AUTONOMOUS AUDIT PIPELINE</span>
+              </span>
+              <span id="pipeline-status-badge" class="glass-silver text-neutral-300 px-2.5 py-0.5 rounded-sm">STANDBY</span>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-2.5 font-mono text-[10px]">
+              <div id="node-1" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">01</div>
+                <div class="font-semibold text-neutral-200">Document Intake</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Ready</div>
+              </div>
+              <div id="node-2" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">02</div>
+                <div class="font-semibold text-neutral-200">Fields Extracted</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Idle</div>
+              </div>
+              <div id="node-3" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">03</div>
+                <div class="font-semibold text-neutral-200">GSTIN / PAN</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Idle</div>
+              </div>
+              <div id="node-4" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">04</div>
+                <div class="font-semibold text-neutral-200">Registry Match</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Idle</div>
+              </div>
+              <div id="node-5" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">05</div>
+                <div class="font-semibold text-neutral-200">Evidence Audit</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Idle</div>
+              </div>
+              <div id="node-6" class="p-3 border border-brandBorder bg-brandSubtle text-center space-y-0.5 transition rounded-sm">
+                <div class="text-neutral-500">06</div>
+                <div class="font-semibold text-neutral-200">Verdict Issued</div>
+                <div class="text-[9px] text-neutral-400 status-lbl">Idle</div>
+              </div>
+            </div>
+
+            <div id="pipeline-stream" class="p-3.5 bg-black/90 border border-brandBorder text-neutral-300 font-mono text-[11px] h-28 overflow-y-auto space-y-1 rounded-sm">
+              <div class="text-neutral-500">[SYSTEM] Pipeline in standby. Select a file or click a synthetic scenario below.</div>
+            </div>
+          </div>
+
+          <div class="bg-brandPanel border border-brandBorder p-5 space-y-2 font-mono text-xs rounded-sm">
+            <div class="text-[10px] uppercase text-brandMuted">DEMO CASE FIXTURES // SYNTHETIC PROOFS</div>
+            <div class="flex flex-wrap gap-2.5">
+              <button onclick="runScenario('verified')" class="glass-silver px-3.5 py-1.5 text-neutral-200 hover:text-white transition cursor-pointer rounded-sm">
+                Scenario A: Verified Vendor (Acme MH)
+              </button>
+              <button onclick="runScenario('critical')" class="glass-silver px-3.5 py-1.5 text-neutral-200 hover:text-white transition cursor-pointer rounded-sm">
+                Scenario B: Critical Shell Vendor (Apex Delhi)
+              </button>
+              <button onclick="runScenario('mismatch')" class="glass-silver px-3.5 py-1.5 text-neutral-200 hover:text-white transition cursor-pointer rounded-sm">
+                Scenario C: NAFTA Geofence Mismatch
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW D: ACTIVITY LOG -->
+        <section id="view-activity-log" class="hidden space-y-4">
+          <div>
+            <h1 class="text-3xl font-light text-white">Activity Log</h1>
+            <p class="text-brandMuted text-xs font-mono mt-0.5">IMMUTABLE FORENSIC AUDIT SEQUENCE</p>
+          </div>
+          <div class="bg-brandPanel border border-brandBorder rounded-sm overflow-hidden">
+            <table class="w-full text-left font-mono text-xs">
+              <thead>
+                <tr class="border-b border-brandBorder text-brandMuted bg-white/[0.02]">
+                  <th class="p-3">TIMESTAMP</th>
+                  <th class="p-3">EVENT</th>
+                  <th class="p-3">TARGET</th>
+                  <th class="p-3">HASH / ID</th>
+                  <th class="p-3 text-right">STATUS</th>
+                </tr>
+              </thead>
+              <tbody id="activity-log-tbody" class="divide-y divide-brandBorder/70 text-neutral-300"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    let investigations = [
+      {
+        id: "ORD-IN-8891",
+        vendor_name: "Acme Electronics Technologies Pvt Ltd",
+        gstin: "27AAPFU0939F1ZV",
+        timestamp: "2026-10-24 13:24",
+        origin: "MH // INDIA",
+        score: 0.00,
+        verdict: "PROCEED WITH ONBOARDING",
+        verdict_desc: "All verification checks passed cleanly against state code 27. No discrepancies detected.",
+        compliance: "98.5%",
+        sanctions: "PASSED",
+        latency: "3.8 ms",
+        evidence: [
+          { check: "GSTIN Structure & State Code", doc: "27AAPFU0939F1ZV", reg: "27 (Maharashtra) Active", res: "PASSED", exp: "15-char valid checksum", source: "Invoice PDF + IN-GSTN", expl: "State code 27 matches registered entity legal state in Maharashtra." },
+          { check: "Permanent Account Number (PAN)", doc: "AAPFU0939F", reg: "AAPFU0939F [Verified]", res: "PASSED", exp: "PAN verified active", source: "CBDT Tax Registry", expl: "PAN holder name matches legal business name." },
+          { check: "Country & Geofence Route", doc: "IN -> IN", reg: "IN -> IN (Domestic)", res: "PASSED", exp: "Non-embargoed route", source: "OFAC Sanctions Screener", expl: "Neither sender nor recipient are in designated trade restriction areas." },
+          { check: "Tax Filing Compliance", doc: "Current (Q2-2026)", reg: "98.5% Timely Filing", res: "PASSED", exp: "Filing rate > 90%", source: "GSTN Registry", expl: "Regular returns filed with zero default notices." }
+        ],
+        documents: [{ name: "Commercial_Invoice_Acme_8891.pdf", size: "48.2 KB", status: "VERIFIED", extraction: "100% Extracted" }],
+        rationale: "All critical checks passed. Legal name matches GSTIN database. Recommended for standard onboarding.",
+        next_steps: "Standard vendor approval. Archive audit dossier for bi-annual compliance cycle."
+      },
+      {
+        id: "ORD-IN-6621",
+        vendor_name: "Apex Shell Exporters",
+        gstin: "07FAKEG9999Z1Z0",
+        timestamp: "2026-10-24 11:15",
+        origin: "DL // INDIA",
+        score: 1.00,
+        verdict: "HOLD ONBOARDING",
+        verdict_desc: "Material inconsistencies detected. Supplier status flagged as SUSPENDED in tax registry.",
+        compliance: "0.0%",
+        sanctions: "PASSED",
+        latency: "4.1 ms",
+        evidence: [
+          { check: "GSTIN Registry Lookup", doc: "07FAKEG9999Z1Z0", reg: "SUSPENDED_TAX_EVASION", res: "FLAGGED_CRITICAL", exp: "ACTIVE Taxpayer", source: "IN-GSTN Registry", expl: "Vendor tax registration suspended due to non-existent operational address." },
+          { check: "KYC & Verification Proof", doc: "Claimed Audited", reg: "Unverified / Missing", res: "FAILED", exp: "Audited KYC Dossier", source: "Corporate Registry", expl: "Missing statutory documentation and beneficial ownership disclosure." }
+        ],
+        documents: [{ name: "Apex_Invoice_Proforma.pdf", size: "112.4 KB", status: "FLAGGED", extraction: "Fields Discrepant" }],
+        rationale: "Vendor profile flagged for fraudulent invoice generation. High risk of circular trading.",
+        next_steps: "Do not issue payment. Escalate dossier to Legal & Compliance department immediately."
+      },
+      {
+        id: "ORD-US-4402",
+        vendor_name: "Trans-Pacific Logistics LLC",
+        gstin: "NON-APPLICABLE",
+        timestamp: "2026-10-24 09:30",
+        origin: "US -> CA",
+        score: 0.20,
+        verdict: "MANUAL REVIEW REQUIRED",
+        verdict_desc: "Billing and shipping country mismatch between US and CA. Requires address validation.",
+        compliance: "N/A",
+        sanctions: "PASSED",
+        latency: "2.9 ms",
+        evidence: [
+          { check: "Geofence Mismatch", doc: "Billing: US // Ship: CA", reg: "Cross-Border NAFTA", res: "FLAGGED_REVIEW", exp: "Matching Origin", source: "Invoice Address Parser", expl: "Freight routed through Canadian forwarder while billing address is Delaware." }
+        ],
+        documents: [{ name: "BOL_Freight_Manifest_4402.pdf", size: "94.0 KB", status: "REVIEW", extraction: "Extracted" }],
+        rationale: "Potential freight rerouting. Requires human sign-off on ultimate delivery destination.",
+        next_steps: "Contact purchasing representative to confirm Canadian distribution hub authorization."
+      }
+    ];
+
+    let currentFeaturedId = "ORD-IN-8891";
+    let activeCase = investigations[0];
+
+    // --- 3D Holographic Cyber Defense Engine (Three.js WebGL with Pure Monochrome Silver/Chrome) ---
+    let switchHeroShape = null;
+
+    function initMonolithCanvas() {
+      const canvas = document.getElementById("monolith-canvas");
+      if (!canvas) return;
+
+      // Check if Three.js is loaded
+      if (typeof THREE === "undefined") {
+        console.warn("Three.js not loaded, falling back to 2D canvas");
+        initCanvas2DFallback(canvas);
+        return;
+      }
+
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      // 1. WebGL Renderer
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas: canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: "high-performance"
+        });
+      } catch (e) {
+        console.warn("WebGL initialization failed, falling back to 2D canvas", e);
+        initCanvas2DFallback(canvas);
+        return;
+      }
+
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.25;
+
+      // 2. Camera & Scene
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      camera.position.set(0, 0, 7.6);
+
+      // Master World Group
+      const masterGroup = new THREE.Group();
+      scene.add(masterGroup);
+
+      // Positioning helper for desktop vs mobile
+      function updateGroupTransform() {
+        const isDesktop = window.innerWidth > 1024;
+        const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+        if (isDesktop) {
+          masterGroup.position.set(1.7, 0.05, 0);
+          masterGroup.scale.set(1.05, 1.05, 1.05);
+        } else if (isTablet) {
+          masterGroup.position.set(1.0, 0.0, 0);
+          masterGroup.scale.set(0.85, 0.85, 0.85);
+        } else {
+          masterGroup.position.set(0, 0.5, 0);
+          masterGroup.scale.set(0.72, 0.72, 0.72);
+        }
+      }
+      updateGroupTransform();
+
+      // 3. Studio Lighting (Liquid Silver / Chrome Aesthetics)
+      const ambientLight = new THREE.AmbientLight(0x28282d, 1.4);
+      scene.add(ambientLight);
+
+      // Key light - creates crisp specular silver glints
+      const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+      keyLight.position.set(6, 8, 6);
+      scene.add(keyLight);
+
+      // Rim light - sharp silver contour
+      const rimLight = new THREE.DirectionalLight(0xb5b5b5, 3.5);
+      rimLight.position.set(-6, -5, -6);
+      scene.add(rimLight);
+
+      // Front subtle fill
+      const fillLight = new THREE.DirectionalLight(0x707070, 1.2);
+      fillLight.position.set(0, 0, 8);
+      scene.add(fillLight);
+
+      // Dynamic Laser Scan Point Light (moves vertically)
+      const scanPointLight = new THREE.PointLight(0xffffff, 3.0, 6);
+      masterGroup.add(scanPointLight);
+
+      // 4. Kinetic Concentric Gyroscope Gimbal Rings (Aesthetic Forensic Architecture)
+      const ringsGroup = new THREE.Group();
+      masterGroup.add(ringsGroup);
+
+      // Outer Telemetry Ring
+      const outerRingGeo = new THREE.TorusGeometry(2.45, 0.012, 16, 120);
+      const outerRingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.32 });
+      const outerRing = new THREE.Mesh(outerRingGeo, outerRingMat);
+      outerRing.rotation.x = Math.PI / 2;
+      ringsGroup.add(outerRing);
+
+      // Orbiting Satellite Nodes on outer ring (Fetch.ai Agent telemetry beacons)
+      const satGeo = new THREE.SphereGeometry(0.065, 16, 16);
+      const satMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+      const sat1 = new THREE.Mesh(satGeo, satMat);
+      const sat2 = new THREE.Mesh(satGeo, satMat);
+      ringsGroup.add(sat1);
+      ringsGroup.add(sat2);
+
+      // Middle Tilted Gimbal Ring
+      const midRingGeo = new THREE.TorusGeometry(2.15, 0.009, 16, 100);
+      const midRingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.22 });
+      const midRing = new THREE.Mesh(midRingGeo, midRingMat);
+      midRing.rotation.x = 0.85;
+      midRing.rotation.y = 0.4;
+      ringsGroup.add(midRing);
+
+      // Inner Fast Gimbal Ring
+      const innerRingGeo = new THREE.TorusGeometry(1.85, 0.007, 16, 80);
+      const innerRingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.16 });
+      const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+      innerRing.rotation.x = -0.65;
+      innerRing.rotation.z = 0.35;
+      ringsGroup.add(innerRing);
+
+      // Laser Scanner Ring (moves up and down)
+      const scanRingGeo = new THREE.TorusGeometry(1.7, 0.012, 16, 80);
+      const scanRingMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
+      const scanRing = new THREE.Mesh(scanRingGeo, scanRingMat);
+      scanRing.rotation.x = Math.PI / 2;
+      masterGroup.add(scanRing);
+
+      // 5. Constellation Ambient Starfield Nebula
+      const particleCount = 260;
+      const pPositions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount; i++) {
+        const r = 2.7 + Math.random() * 2.8;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos((Math.random() * 2) - 1);
+        pPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        pPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        pPositions[i * 3 + 2] = r * Math.cos(phi);
+      }
+      const pGeo = new THREE.BufferGeometry();
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      const pMat = new THREE.PointsMaterial({
+        color: 0xffffff,
+        size: 0.04,
+        transparent: true,
+        opacity: 0.6
+      });
+      const particleSystem = new THREE.Points(pGeo, pMat);
+      masterGroup.add(particleSystem);
+
+      // 6. Shape 1: Liquid Chrome Torus Knot (Default - Fluid, Hypnotic, High-End)
+      const knotGroup = new THREE.Group();
+      const knotGeo = new THREE.TorusKnotGeometry(1.28, 0.38, 160, 32, 2, 3);
+      const knotMat = new THREE.MeshStandardMaterial({
+        color: 0xeaeaea,
+        metalness: 0.95,
+        roughness: 0.15,
+        wireframe: false
+      });
+      const knotMesh = new THREE.Mesh(knotGeo, knotMat);
+      knotGroup.add(knotMesh);
+
+      // Cybernetic wireframe aura over knot
+      const knotWireGeo = new THREE.TorusKnotGeometry(1.29, 0.385, 96, 18, 2, 3);
+      const knotWireMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.08
+      });
+      const knotWireMesh = new THREE.Mesh(knotWireGeo, knotWireMat);
+      knotGroup.add(knotWireMesh);
+
+      // 7. Shape 2: Quantum Crystalline Prism (Faceted Dodecahedron / Core)
+      const prismGroup = new THREE.Group();
+      const prismGeo = new THREE.IcosahedronGeometry(1.5, 0);
+      const prismMat = new THREE.MeshStandardMaterial({
+        color: 0xdcdcdc,
+        metalness: 0.94,
+        roughness: 0.12,
+        flatShading: true
+      });
+      const prismMesh = new THREE.Mesh(prismGeo, prismMat);
+      prismGroup.add(prismMesh);
+
+      const prismWireGeo = new THREE.IcosahedronGeometry(1.53, 0);
+      const prismWireMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.35
+      });
+      const prismWireMesh = new THREE.Mesh(prismWireGeo, prismWireMat);
+      prismGroup.add(prismWireMesh);
+
+      const innerPrismGeo = new THREE.OctahedronGeometry(0.78, 0);
+      const innerPrismMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.98,
+        roughness: 0.08,
+        wireframe: false
+      });
+      const innerPrismMesh = new THREE.Mesh(innerPrismGeo, innerPrismMat);
+      prismGroup.add(innerPrismMesh);
+
+      // 8. Shape 3: 4D Cybernetic Tesseract Hyper-Cube
+      const hypercubeGroup = new THREE.Group();
+      const outerBoxGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+      const outerBoxMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.32
+      });
+      const outerBoxMesh = new THREE.Mesh(outerBoxGeo, outerBoxMat);
+      hypercubeGroup.add(outerBoxMesh);
+
+      const innerBoxGeo = new THREE.BoxGeometry(1.15, 1.15, 1.15);
+      const innerBoxMat = new THREE.MeshStandardMaterial({
+        color: 0xe8e8e8,
+        metalness: 0.96,
+        roughness: 0.14,
+        wireframe: false
+      });
+      const innerBoxMesh = new THREE.Mesh(innerBoxGeo, innerBoxMat);
+      hypercubeGroup.add(innerBoxMesh);
+
+      // Dimensional Connectors
+      const corners = [
+        [-1.05,-1.05,-1.05], [1.05,-1.05,-1.05], [1.05,1.05,-1.05], [-1.05,1.05,-1.05],
+        [-1.05,-1.05,1.05], [1.05,-1.05,1.05], [1.05,1.05,1.05], [-1.05,1.05,1.05]
+      ];
+      const linePositions = [];
+      corners.forEach(c => {
+        linePositions.push(c[0], c[1], c[2], c[0]*0.55, c[1]*0.55, c[2]*0.55);
+      });
+      const linesGeo = new THREE.BufferGeometry();
+      linesGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+      const lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.28 });
+      const connectorLines = new THREE.LineSegments(linesGeo, lineMat);
+      hypercubeGroup.add(connectorLines);
+
+      // 9. Active Shape Management & Switcher
+      const shapeMap = {
+        knot: knotGroup,
+        prism: prismGroup,
+        hypercube: hypercubeGroup
+      };
+
+      let currentShapeKey = "knot";
+      let activeShape = knotGroup;
+      masterGroup.add(activeShape);
+
+      switchHeroShape = function(type) {
+        if (!shapeMap[type] || currentShapeKey === type) return;
+
+        // Animate transition
+        const prevShape = activeShape;
+        const nextShape = shapeMap[type];
+        currentShapeKey = type;
+
+        // Quick scale morph
+        let scaleStep = 1.0;
+        const morphOut = setInterval(() => {
+          scaleStep -= 0.15;
+          if (scaleStep <= 0.05) {
+            clearInterval(morphOut);
+            masterGroup.remove(prevShape);
+            nextShape.scale.set(0.05, 0.05, 0.05);
+            masterGroup.add(nextShape);
+            activeShape = nextShape;
+
+            let scaleIn = 0.05;
+            const morphIn = setInterval(() => {
+              scaleIn += 0.15;
+              if (scaleIn >= 1.0) {
+                scaleIn = 1.0;
+                clearInterval(morphIn);
+              }
+              nextShape.scale.set(scaleIn, scaleIn, scaleIn);
+            }, 16);
+          } else {
+            prevShape.scale.set(scaleStep, scaleStep, scaleStep);
+          }
+        }, 16);
+
+        // Update UI Button states
+        ["knot", "prism", "hypercube"].forEach(k => {
+          const btn = document.getElementById("shape-btn-" + k);
+          if (btn) {
+            if (k === type) {
+              btn.className = "px-1.5 py-1.5 bg-white/15 text-white font-semibold border border-white/25 rounded-xs transition text-center cursor-pointer hover:bg-white/25";
+            } else {
+              btn.className = "px-1.5 py-1.5 text-neutral-400 hover:text-white border border-transparent hover:border-white/15 rounded-xs transition text-center cursor-pointer";
+            }
+          }
+        });
+      };
+
+      // 10. Interactive Physics & Cursor Parallax
+      let targetRotX = 0, targetRotY = 0;
+      let mouseX = 0, mouseY = 0;
+
+      window.addEventListener("mousemove", (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+        targetRotY = mouseX * 0.65;
+        targetRotX = mouseY * 0.55;
+      });
+
+      window.addEventListener("touchmove", (e) => {
+        if (e.touches && e.touches.length > 0) {
+          mouseX = (e.touches[0].clientX / window.innerWidth - 0.5) * 2;
+          mouseY = (e.touches[0].clientY / window.innerHeight - 0.5) * 2;
+          targetRotY = mouseX * 0.65;
+          targetRotX = mouseY * 0.55;
+        }
+      });
+
+      window.addEventListener("resize", () => {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+        updateGroupTransform();
+      });
+
+      // 11. 60 FPS Render Loop
+      let orbitAngle = 0;
+      let scanPhase = 0;
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        // Intrinsic Rotation of the Core Shape
+        if (currentShapeKey === "knot") {
+          activeShape.rotation.x += 0.005;
+          activeShape.rotation.y += 0.008;
+          activeShape.rotation.z += 0.003;
+        } else if (currentShapeKey === "prism") {
+          activeShape.rotation.x += 0.004;
+          activeShape.rotation.y += 0.006;
+          innerPrismMesh.rotation.y -= 0.014;
+          innerPrismMesh.rotation.x -= 0.009;
+        } else if (currentShapeKey === "hypercube") {
+          outerBoxMesh.rotation.x += 0.003;
+          outerBoxMesh.rotation.y += 0.005;
+          innerBoxMesh.rotation.x -= 0.008;
+          innerBoxMesh.rotation.y -= 0.012;
+        }
+
+        // Gyroscopic Counter-Rotations
+        outerRing.rotation.z += 0.002;
+        midRing.rotation.y += 0.004;
+        midRing.rotation.x += 0.002;
+        innerRing.rotation.z -= 0.006;
+
+        // Satellite Orbit around outer ring
+        orbitAngle += 0.016;
+        sat1.position.set(Math.cos(orbitAngle) * 2.45, 0, Math.sin(orbitAngle) * 2.45);
+        sat2.position.set(Math.cos(orbitAngle + Math.PI) * 2.45, 0, Math.sin(orbitAngle + Math.PI) * 2.45);
+
+        // Vertical Laser Scanner
+        scanPhase += 0.022;
+        const scanY = Math.sin(scanPhase) * 1.55;
+        scanRing.position.y = scanY;
+        scanPointLight.position.set(0, scanY, 0.4);
+        scanRingMat.opacity = 0.35 + Math.cos(scanPhase) * 0.25;
+
+        // Ambient Particles Drift
+        particleSystem.rotation.y -= 0.001;
+
+        // Damped Parallax Lerp
+        masterGroup.rotation.y += (targetRotY - masterGroup.rotation.y) * 0.045;
+        masterGroup.rotation.x += (targetRotX - masterGroup.rotation.x) * 0.045;
+
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    // Fallback Canvas Renderer if WebGL unavailable
+    function initCanvas2DFallback(canvas) {
+      const ctx = canvas.getContext("2d");
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      window.addEventListener("resize", () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      });
+      let t = 0;
+      function loop() {
+        ctx.clearRect(0, 0, w, h);
+        t += 0.015;
+        const cx = w > 768 ? w * 0.7 : w * 0.5;
+        const cy = h * 0.5;
+        const r = Math.min(w, h) * 0.22;
+        ctx.strokeStyle = "rgba(255,255,255,0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i <= 60; i++) {
+          const a = (i / 60) * Math.PI * 2;
+          const x = cx + Math.cos(a + t) * r;
+          const y = cy + Math.sin(a * 2 + t) * (r * 0.6);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    // --- Broken Text Cyber Decryption Glitch Effect (Monochrome Silver/Grey) ---
+    function initHeroHeadingGlitch() {
+      const heading = document.getElementById("hero-heading");
+      if (!heading) return;
+
+      const originalHTML = heading.innerHTML;
+      const originalText = "Trust, but verify.";
+      const glyphs = "!<>-_\\/[]{}—=+*^?#________0123456789ABCDEFØ§∆¥$@";
+      let isGlitching = false;
+      let glitchInterval = null;
+
+      function runGlitch() {
+        if (isGlitching) return;
+        isGlitching = true;
+        heading.classList.add("glitch-active");
+
+        let step = 0;
+        const totalSteps = 18;
+
+        clearInterval(glitchInterval);
+        glitchInterval = setInterval(() => {
+          step++;
+
+          if (step >= totalSteps) {
+            clearInterval(glitchInterval);
+            heading.innerHTML = originalHTML;
+            heading.classList.remove("glitch-active");
+            isGlitching = false;
+            return;
+          }
+
+          // Fractured cyber runes scramble
+          const brokenChars = originalText.split("").map((ch, i) => {
+            if (ch === " " || ch === "," || ch === ".") return ch;
+            const progress = step / totalSteps;
+            if (Math.random() < progress) {
+              return ch;
+            }
+            return glyphs[Math.floor(Math.random() * glyphs.length)];
+          }).join("");
+
+          heading.innerHTML = `
+            <span class="silver-gradient-text">${brokenChars.slice(0, 11)}</span>
+            <span class="relative inline-block font-bold text-white underline decoration-neutral-400 decoration-2 underline-offset-8">${brokenChars.slice(11)}</span>
+          `;
+        }, 40);
+      }
+
+      heading.addEventListener("mouseenter", runGlitch);
+      heading.addEventListener("mousemove", () => {
+        if (!isGlitching && Math.random() < 0.2) {
+          runGlitch();
+        }
+      });
+    }
+
+    // --- Interactive Cursor Spotlight (Pure Monochrome White/Silver) ---
+    function initCursorSpotlight() {
+      const spotlight = document.getElementById("cursor-spotlight");
+      if (!spotlight) return;
+      window.addEventListener("mousemove", (e) => {
+        spotlight.style.background = `radial-gradient(650px circle at ${e.clientX}px ${e.clientY}px, rgba(255, 255, 255, 0.035), transparent 45%)`;
+      });
+    }
+
+    function enterWorkspace(isDemo = false) {
+      const intro = document.getElementById("intro-screen");
+      const workspace = document.getElementById("workspace-container");
+      intro.style.opacity = "0";
+      setTimeout(() => {
+        intro.style.display = "none";
+        workspace.classList.remove("opacity-0");
+        workspace.classList.add("opacity-100");
+        if (isDemo) viewInvestigationDetail("ORD-IN-8891");
+      }, 700);
+      window.location.hash = "workspace";
+    }
+
+    function replayIntro() {
+      window.location.hash = "";
+      window.location.reload();
+    }
+
+    if (window.location.hash === "#workspace") {
+      document.getElementById("intro-screen").style.display = "none";
+      const ws = document.getElementById("workspace-container");
+      ws.classList.remove("opacity-0");
+      ws.classList.add("opacity-100");
+    } else {
+      window.addEventListener("DOMContentLoaded", () => {
+        initMonolithCanvas();
+        initHeroHeadingGlitch();
+        initCursorSpotlight();
+      });
+    }
+
+    function switchView(viewId) {
+      ["view-overview", "view-investigation-detail", "view-document-intake", "view-activity-log"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+      });
+
+      ["nav-overview", "nav-investigations", "nav-document-intake", "nav-activity-log"].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.className = "w-full flex items-center space-x-2.5 px-3 py-2 text-brandMuted hover:text-brandText hover:bg-white/5 text-left transition cursor-pointer rounded-sm";
+      });
+
+      if (viewId === "overview" || viewId === "investigations") {
+        document.getElementById("view-overview").classList.remove("hidden");
+        document.getElementById(viewId === "overview" ? "nav-overview" : "nav-investigations").className = "nav-active w-full flex items-center space-x-2.5 px-3 py-2 text-left transition cursor-pointer rounded-sm";
+        document.getElementById("page-title").innerText = viewId === "overview" ? "WORKSPACE // OVERVIEW" : "WORKSPACE // ARCHIVE";
+      } else if (viewId === "document-intake") {
+        document.getElementById("view-document-intake").classList.remove("hidden");
+        document.getElementById("nav-document-intake").className = "nav-active w-full flex items-center space-x-2.5 px-3 py-2 text-left transition cursor-pointer rounded-sm";
+        document.getElementById("page-title").innerText = "WORKSPACE // DOCUMENT FORENSICS";
+      } else if (viewId === "activity-log") {
+        document.getElementById("view-activity-log").classList.remove("hidden");
+        document.getElementById("nav-activity-log").className = "nav-active w-full flex items-center space-x-2.5 px-3 py-2 text-left transition cursor-pointer rounded-sm";
+        document.getElementById("page-title").innerText = "WORKSPACE // IMMUTABLE AUDIT LOG";
+      }
+    }
+
+    function renderOverviewCases() {
+      const container = document.getElementById("investigations-list");
+      container.innerHTML = "";
+
+      investigations.forEach(inv => {
+        const row = document.createElement("div");
+        row.className = "p-3.5 hover:bg-white/[0.03] cursor-pointer transition flex items-center justify-between border-b border-brandBorder/60";
+        row.onclick = () => setFeaturedCase(inv);
+        row.ondblclick = () => viewInvestigationDetail(inv.id);
+
+        const isApproved = inv.score === 0;
+        const isHeld = inv.score >= 0.65;
+
+        const badgeClass = isApproved
+          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400 font-semibold"
+          : isHeld
+          ? "border-rose-500/50 bg-rose-500/15 text-rose-400 font-bold"
+          : "border-amber-500/40 bg-amber-500/10 text-amber-300 font-semibold";
+
+        row.innerHTML = `
+          <div>
+            <div class="text-[10px] text-brandMuted uppercase">${inv.id} &bull; ${inv.origin}</div>
+            <div class="text-xs font-semibold text-neutral-100 mt-0.5">${inv.vendor_name}</div>
+          </div>
+          <div class="text-right">
+            <span class="px-2 py-0.5 border text-[9px] rounded-sm ${badgeClass}">
+              ${inv.verdict}
+            </span>
+            <div class="text-[10px] text-brandMuted mt-0.5">RISK: ${inv.score.toFixed(2)}</div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+
+      document.getElementById("stat-total").innerText = investigations.length;
+    }
+
+    function setFeaturedCase(inv) {
+      currentFeaturedId = inv.id;
+      document.getElementById("feat-id").innerText = inv.id;
+      document.getElementById("feat-name").innerText = inv.vendor_name;
+      document.getElementById("feat-date").innerText = `${inv.timestamp} // UTC+5:30`;
+      document.getElementById("feat-verdict").innerText = inv.verdict;
+      document.getElementById("feat-score").innerText = `RISK: ${inv.score.toFixed(2)} / 1.00`;
+      document.getElementById("feat-summary").innerText = inv.verdict_desc;
+
+      const vBox = document.getElementById("feat-verdict-box");
+      const isApproved = inv.score === 0;
+      const isHeld = inv.score >= 0.65;
+      if (isApproved) {
+        vBox.className = "p-4 border border-emerald-500/30 bg-emerald-950/20 text-emerald-300 rounded-sm";
+      } else if (isHeld) {
+        vBox.className = "p-4 border border-rose-500/40 bg-rose-950/25 text-rose-300 rounded-sm";
+      } else {
+        vBox.className = "p-4 border border-amber-500/30 bg-amber-950/20 text-amber-300 rounded-sm";
+      }
+
+      const fContainer = document.getElementById("feat-findings");
+      fContainer.innerHTML = inv.evidence.slice(0, 3).map(e => `
+        <div class="flex items-start space-x-1.5">
+          <span class="text-neutral-500">&bull;</span>
+          <span><strong class="text-neutral-200">${e.check}</strong>: ${e.expl}</span>
+        </div>
+      `).join('');
+    }
+
+    function viewInvestigationDetail(id) {
+      const inv = investigations.find(i => i.id === id) || investigations[0];
+      activeCase = inv;
+
+      ["view-overview", "view-document-intake", "view-activity-log"].forEach(v => {
+        document.getElementById(v).classList.add("hidden");
+      });
+      document.getElementById("view-investigation-detail").classList.remove("hidden");
+      document.getElementById("page-title").innerText = `INVESTIGATION // ${inv.id}`;
+
+      document.getElementById("detail-case-id").innerText = `CASE // ${inv.id}`;
+      document.getElementById("detail-vendor-name").innerText = inv.vendor_name;
+      document.getElementById("detail-timestamp").innerText = `AUDITED: ${inv.timestamp}`;
+      document.getElementById("detail-gstin").innerText = `GSTIN: ${inv.gstin}`;
+      document.getElementById("detail-origin").innerText = `REGION: ${inv.origin}`;
+
+      document.getElementById("detail-score-num").innerText = inv.score.toFixed(2);
+      const scoreBar = document.getElementById("detail-score-bar");
+      scoreBar.style.width = `${inv.score * 100}%`;
+      scoreBar.className = `h-full rounded-full transition-all duration-500 ${inv.score === 0 ? 'bg-emerald-400' : inv.score >= 0.65 ? 'bg-rose-500' : 'bg-amber-400'}`;
+
+      document.getElementById("detail-verdict").innerText = inv.verdict;
+      document.getElementById("detail-verdict-desc").innerText = inv.verdict_desc;
+      const detailVBox = document.getElementById("detail-verdict-box");
+      const isApproved = inv.score === 0;
+      const isHeld = inv.score >= 0.65;
+      if (isApproved) {
+        detailVBox.className = "mt-5 p-4 border border-emerald-500/30 bg-emerald-950/20 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-3";
+      } else if (isHeld) {
+        detailVBox.className = "mt-5 p-4 border border-rose-500/40 bg-rose-950/25 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-3";
+      } else {
+        detailVBox.className = "mt-5 p-4 border border-amber-500/30 bg-amber-950/20 rounded-sm flex flex-col md:flex-row md:items-center justify-between gap-3";
+      }
+
+      document.getElementById("tab-overview-compliance").innerText = inv.compliance;
+      document.getElementById("tab-overview-sanctions").innerText = inv.sanctions;
+      document.getElementById("tab-overview-latency").innerText = inv.latency;
+
+      const tbody = document.getElementById("detail-evidence-tbody");
+      tbody.innerHTML = "";
+      inv.evidence.forEach(e => {
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-white/[0.03] cursor-pointer border-b border-brandBorder/60 transition";
+        tr.onclick = () => openEvidenceDrawer(e);
+
+        const badgeClass = e.res === 'PASSED'
+          ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+          : e.res.includes('CRITICAL') || e.res === 'FAILED'
+          ? 'border-rose-500/50 bg-rose-500/15 text-rose-400 font-bold'
+          : 'border-amber-500/40 bg-amber-500/10 text-amber-300';
+
+        tr.innerHTML = `
+          <td class="p-3.5 font-semibold text-white">${e.check}</td>
+          <td class="p-3.5 text-neutral-400">${e.doc}</td>
+          <td class="p-3.5 text-neutral-400">${e.reg}</td>
+          <td class="p-3.5 text-right">
+            <span class="px-2 py-0.5 border text-[9px] rounded-sm ${badgeClass}">
+              ${e.res}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const docList = document.getElementById("detail-documents-list");
+      docList.innerHTML = inv.documents.map(d => `
+        <div class="p-3.5 flex items-center justify-between hover:bg-white/[0.02]">
+          <div class="flex items-center space-x-2">
+            <i data-lucide="file-text" class="w-3.5 h-3.5 text-brandMuted"></i>
+            <span class="font-semibold text-white">${d.name}</span>
+            <span class="text-brandMuted text-[10px]">(${d.size})</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-neutral-400">${d.extraction}</span>
+            <span class="px-2 py-0.5 border border-brandBorder text-[9px] uppercase text-neutral-300 rounded-sm">${d.status}</span>
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById("report-rationale").innerText = inv.rationale;
+      document.getElementById("report-next-steps").innerText = inv.next_steps;
+
+      switchDetailTab('tab-overview');
+      lucide.createIcons();
+    }
+
+    function switchDetailTab(tabId) {
+      ['tab-overview', 'tab-evidence', 'tab-documents', 'tab-report'].forEach(t => {
+        document.getElementById(`content-${t}`).classList.add("hidden");
+        document.getElementById(`btn-${t}`).className = "pb-2.5 border-b-2 border-transparent text-brandMuted hover:text-white cursor-pointer";
+      });
+      document.getElementById(`content-${tabId}`).classList.remove("hidden");
+      document.getElementById(`btn-${tabId}`).className = "pb-2.5 border-b-2 border-white text-white font-semibold cursor-pointer";
+    }
+
+    function openEvidenceDrawer(item) {
+      document.getElementById("evidence-drawer").classList.remove("hidden");
+      document.getElementById("drawer-title").innerText = `PROVENANCE // ${item.check.toUpperCase()}`;
+      document.getElementById("drawer-expected").innerText = item.exp;
+      document.getElementById("drawer-observed").innerText = item.doc;
+      document.getElementById("drawer-source").innerText = item.source;
+      document.getElementById("drawer-verdict").innerText = item.res;
+      document.getElementById("drawer-explanation").innerText = item.expl;
+    }
+
+    function closeEvidenceDrawer() {
+      document.getElementById("evidence-drawer").classList.add("hidden");
+    }
+
+    async function processDocumentUpload(files) {
+      if (!files || !files[0]) return;
+      executePipelineRun(files[0].name, files[0].size);
+    }
+
+    function runScenario(type) {
+      switchView('document-intake');
+      const filename = type === "verified" ? "Commercial_Invoice_Acme_8891.pdf" : (type === "critical" ? "Apex_Shell_Proforma_Inv.pdf" : "NAFTA_Routing_Mismatch.pdf");
+      executePipelineRun(filename, 51200);
+    }
+
+    async function executePipelineRun(filename, size) {
+      logPipeline(`[INTAKE] Received document: ${filename} (${(size / 1024).toFixed(1)} KB)`);
+      setNode(1, "Received", "active");
+
+      await sleep(350);
+      setNode(1, "Complete", "done");
+      setNode(2, "Extracting", "active");
+      logPipeline(`[PARSER] Parsing text streams, invoice totals, and entity fields...`);
+
+      await sleep(400);
+      setNode(2, "Extracted", "done");
+      setNode(3, "Checking", "active");
+      logPipeline(`[RULE] Validating 15-character GSTIN structure & PAN checksum...`);
+
+      await sleep(350);
+      setNode(3, "Validated", "done");
+      setNode(4, "Matching", "active");
+      logPipeline(`[REGISTRY] Reconciling against jurisdiction tax records...`);
+
+      await sleep(400);
+      setNode(4, "Matched", "done");
+      setNode(5, "Auditing", "active");
+      logPipeline(`[FORENSICS] Running geofence, velocity, and sanctions rules...`);
+
+      await sleep(350);
+      setNode(5, "Audited", "done");
+      setNode(6, "Issued", "done");
+
+      const isCritical = filename.includes("Apex");
+      const isMismatch = filename.includes("Mismatch");
+
+      const newCase = {
+        id: `CASE-${Math.floor(1000 + Math.random() * 9000)}`,
+        vendor_name: isCritical ? "Apex Shell Exporters" : (isMismatch ? "Trans-Pacific Logistics" : "Synthesized Commercial Supplier"),
+        gstin: isCritical ? "07FAKEG9999Z1Z0" : (isMismatch ? "NON-APPLICABLE" : "27AAPFU0939F1ZV"),
+        timestamp: "Just now",
+        origin: isMismatch ? "US -> CA" : "IN // DOMESTIC",
+        score: isCritical ? 1.00 : (isMismatch ? 0.20 : 0.00),
+        verdict: isCritical ? "HOLD ONBOARDING" : (isMismatch ? "MANUAL REVIEW REQUIRED" : "PROCEED WITH ONBOARDING"),
+        verdict_desc: isCritical ? "Shell company markers identified in corporate registry." : (isMismatch ? "Billing/shipping routing mismatch." : "All verification checks passed cleanly."),
+        compliance: isCritical ? "0%" : (isMismatch ? "N/A" : "98.5%"),
+        sanctions: "PASSED",
+        latency: "3.2 ms",
+        evidence: [
+          { check: "Document Compliance", doc: "Submitted", reg: "Verified", res: isCritical ? "FLAGGED_CRITICAL" : "PASSED", exp: "Active status", source: "Tax Registry", expl: "Entity status checked against official jurisdiction records." }
+        ],
+        documents: [{ name: filename, size: `${(size / 1024).toFixed(1)} KB`, status: "PROCESSED", extraction: "100%" }],
+        rationale: "Automated analysis completed. Human-in-the-loop signoff required.",
+        next_steps: "Inspect attached commercial evidence before issuing sign-off."
+      };
+
+      investigations.unshift(newCase);
+      renderOverviewCases();
+      addLog("DOCUMENT_PROCESSED", filename, newCase.id, "SUCCESS");
+      logPipeline(`[COMPLETE] Dossier indexed under ID: ${newCase.id}`);
+
+      setTimeout(() => {
+        viewInvestigationDetail(newCase.id);
+      }, 600);
+    }
+
+    function setNode(idx, label, state) {
+      const node = document.getElementById(`node-${idx}`);
+      if (!node) return;
+      node.querySelector(".status-lbl").innerText = label;
+      if (state === "active") {
+        node.className = "p-3 border border-white bg-white/10 text-white text-center space-y-0.5 transition rounded-sm shadow-[0_0_15px_rgba(255,255,255,0.2)]";
+      } else if (state === "done") {
+        node.className = "p-3 border border-brandBorder bg-white/[0.04] text-neutral-200 text-center space-y-0.5 transition rounded-sm";
+      }
+    }
+
+    function logPipeline(msg) {
+      const stream = document.getElementById("pipeline-stream");
+      const line = document.createElement("div");
+      line.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      stream.appendChild(line);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function addLog(action, target, hash, status) {
+      const tbody = document.getElementById("activity-log-tbody");
+      const tr = document.createElement("tr");
+      tr.className = "hover:bg-white/[0.03] border-b border-brandBorder/60";
+      tr.innerHTML = `
+        <td class="p-3 text-brandMuted">${new Date().toLocaleTimeString()}</td>
+        <td class="p-3 font-semibold text-white">${action}</td>
+        <td class="p-3 text-neutral-300">${target}</td>
+        <td class="p-3 text-brandMuted">${hash}</td>
+        <td class="p-3 text-right"><span class="px-2 py-0.5 border border-brandBorder text-neutral-300 uppercase text-[9px] rounded-sm">${status}</span></td>
+      `;
+      tbody.prepend(tr);
+    }
+
+    function exportAuditDossier() {
+      const blob = new Blob([JSON.stringify(activeCase, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Audit_Dossier_${activeCase.id}.json`;
+      a.click();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderOverviewCases();
+      setFeaturedCase(investigations[0]);
+      addLog("SYSTEM_BOOT", "Kernel v1.2.0", "SHIELD-NODE-09", "INITIALIZED");
+      addLog("SYNC_FIXTURES", "Indian GSTIN Tables", "STATE-27-29", "SYNCHRONIZED");
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
